@@ -1,6 +1,7 @@
 package com.namil.autotrading.service;
 
 import com.namil.autotrading.dto.OrderRequest;
+import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
@@ -18,7 +19,7 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order createOrder(OrderRequest request) {
+    public OrderResponse createOrder(OrderRequest request) {
 
         Order order = new Order(
                 request.getMarket(),
@@ -27,6 +28,15 @@ public class OrderService {
                 OrderStatus.READY
         );
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+
+        return new OrderResponse(
+                savedOrder.getId(),
+                savedOrder.getMarket(),
+                savedOrder.getSide(),
+                savedOrder.getAmount(),
+                savedOrder.getStatus(),
+                savedOrder.getCreatedAt()
+        );
     }
 }

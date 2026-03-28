@@ -1,8 +1,10 @@
 package com.namil.autotrading.controller;
 
 import com.namil.autotrading.dto.OrderRequest;
+import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +20,7 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public Order createOrder(@RequestBody OrderRequest request) {
+    public OrderResponse createOrder(@RequestBody @Valid OrderRequest request) {
         return orderService.createOrder(request);
     }
 }
