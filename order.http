@@ -1,0 +1,8 @@
+POST http://localhost:8081/order
+Content-Type: application/json
+
+{
+  "market": "KRW-BTC",
+  "side": "BUY",
+  "amount": 10000
+}
