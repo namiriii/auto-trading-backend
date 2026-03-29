@@ -5,10 +5,7 @@ import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.service.OrderService;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +26,10 @@ public class OrderController {
     @GetMapping("/orders")
     public List<OrderResponse> getOrders() {
         return orderService.getOrders();
+    }
+
+    @GetMapping("/orders/{id}")
+    public Order getOrder(@PathVariable Long id) {
+        return orderService.getOrder(id);
     }
 }

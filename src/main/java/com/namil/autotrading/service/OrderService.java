@@ -3,12 +3,11 @@ package com.namil.autotrading.service;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
-import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
+import com.namil.autotrading.exception.NotFoundException;
 import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -52,5 +51,9 @@ public class OrderService {
                         order.getStatus(),
                         order.getCreatedAt()
                 )).toList();
+    }
+
+    public Order getOrder(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("주문 없음"));
     }
 }
