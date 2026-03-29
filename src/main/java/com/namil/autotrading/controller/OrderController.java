@@ -32,4 +32,9 @@ public class OrderController {
     public Order getOrder(@PathVariable Long id) {
         return orderService.getOrder(id);
     }
+
+    @PatchMapping("orders/{id}/ordered")
+    public OrderResponse markAsOrdered(@PathVariable Long id) {
+        return orderService.markAsOrdered(id);
+    }
 }

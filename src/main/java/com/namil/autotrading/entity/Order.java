@@ -60,4 +60,8 @@ public class Order {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+    public void changeStatus(OrderStatus status) {
+        this.status = status;
+    }
 }

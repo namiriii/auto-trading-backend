@@ -56,4 +56,22 @@ public class OrderService {
     public Order getOrder(Long id) {
         return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("주문 없음"));
     }
+
+    public OrderResponse markAsOrdered(Long id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("주문 없음"));
+
+        order.changeStatus(OrderStatus.ORDERED);
+
+        Order savedOrder = orderRepository.save(order);
+
+        return new OrderResponse(
+                savedOrder.getId(),
+                savedOrder.getMarket(),
+                savedOrder.getSide(),
+                savedOrder.getAmount(),
+                savedOrder.getStatus(),
+                savedOrder.getCreatedAt()
+        );
+    }
 }
