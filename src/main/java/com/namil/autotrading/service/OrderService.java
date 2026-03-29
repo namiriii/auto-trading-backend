@@ -9,6 +9,7 @@ import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -38,5 +39,18 @@ public class OrderService {
                 savedOrder.getStatus(),
                 savedOrder.getCreatedAt()
         );
+    }
+
+    public List<OrderResponse> getOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(order ->new OrderResponse(
+                        order.getId(),
+                        order.getMarket(),
+                        order.getSide(),
+                        order.getAmount(),
+                        order.getStatus(),
+                        order.getCreatedAt()
+                )).toList();
     }
 }

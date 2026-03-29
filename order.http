@@ -6,3 +6,8 @@ Content-Type: application/json
   "side": "BUY",
   "amount": 10000
 }
+
+###
+
+GET http://localhost:8081/orders
+
