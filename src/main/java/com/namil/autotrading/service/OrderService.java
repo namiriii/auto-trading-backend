@@ -61,7 +61,7 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("주문 없음"));
 
-        order.changeStatus(OrderStatus.ORDERED);
+        order.executeOrder();
 
         Order savedOrder = orderRepository.save(order);
 

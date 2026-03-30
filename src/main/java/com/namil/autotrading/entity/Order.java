@@ -61,7 +61,11 @@ public class Order {
         return createdAt;
     }
 
-    public void changeStatus(OrderStatus status) {
-        this.status = status;
+    // READY 상태의 주문을 실제 주문(ORDER) 상태로 변경
+    public void executeOrder() {
+        if(this.status != OrderStatus.READY) {
+            throw new IllegalStateException("READY 상태만 주문 가능");
+        }
+        this.status = OrderStatus.ORDERED;
     }
 }
