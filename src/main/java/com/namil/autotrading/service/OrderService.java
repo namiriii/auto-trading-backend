@@ -6,6 +6,7 @@ import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.exception.NotFoundException;
 import com.namil.autotrading.repository.OrderRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class OrderService {
 
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("주문없음"));
+                .orElseThrow(()-> new NotFoundException("주문 없음"));
     }
 
     public OrderService(OrderRepository orderRepository) {
@@ -47,9 +48,17 @@ public class OrderService {
 //        );
     }
 
-    public List<OrderResponse> getOrders() {
-        return orderRepository.findAll()
-                .stream()
+    public List<OrderResponse> getOrders(OrderStatus status) {
+
+        List<Order> orders;
+
+        if(status == null) {
+            orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
+        } else {
+            orders = orderRepository.findByStatusOrderByCreatedAtDesc(status);
+        }
+
+        return orders.stream()
                 .map(OrderResponse::from)
                 .toList();
 //        return orderRepository.findAll()
@@ -110,5 +119,12 @@ public class OrderService {
 //                savedOrder.getStatus(),
 //                savedOrder.getCreatedAt()
 //        );
+    }
+
+    public List<OrderResponse> getOrdersByStatus(OrderStatus status) {
+        return orderRepository.findByStatusOrderByCreatedAtDesc(status)
+                .stream()
+                .map(OrderResponse::from)
+                .toList();
     }
 }

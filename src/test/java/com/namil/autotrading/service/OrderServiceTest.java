@@ -107,7 +107,7 @@ public class OrderServiceTest {
         orderService.createOrder(request2);
 
         //when
-        List<OrderResponse> result = orderService.getOrders();
+        List<OrderResponse> result = orderService.getOrders(null);
 
         //then
         assertThat(result).hasSize(2);
@@ -135,6 +135,6 @@ public class OrderServiceTest {
         //when & then
         assertThatThrownBy(()->orderService.getOrder(999L))
                 .isInstanceOf(NotFoundException.class)
-                .hasMessage("주문없음");
+                .hasMessage("주문 없음");
     }
 }

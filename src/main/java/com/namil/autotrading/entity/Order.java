@@ -1,6 +1,8 @@
 package com.namil.autotrading.entity;
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -23,6 +25,8 @@ public class Order {
     private OrderStatus status;
 
     private LocalDateTime createdAt;
+    private LocalDateTime orderedAt;
+    private LocalDateTime canceledAt;
 
     protected Order() {
     }
@@ -61,12 +65,21 @@ public class Order {
         return createdAt;
     }
 
+    public LocalDateTime getOrderedAt() {
+        return orderedAt;
+    }
+
+    public LocalDateTime getCanceledAt() {
+        return canceledAt;
+    }
+
     // READY 상태의 주문을 실제 주문(ORDER) 상태로 변경
     public void executeOrder() {
         if(this.status != OrderStatus.READY) {
             throw new IllegalStateException("READY 상태만 주문 가능");
         }
         this.status = OrderStatus.ORDERED;
+        this.orderedAt = LocalDateTime.now();
     }
 
     // READY 상태의 주문만 취소(CANCELED) 상태로 변경
@@ -75,5 +88,6 @@ public class Order {
             throw new IllegalStateException("READY 상태의 주문만 취소할 수 있습니다.");
         }
         this.status = OrderStatus.CANCELED;
+        this.canceledAt = LocalDateTime.now();
     }
 }

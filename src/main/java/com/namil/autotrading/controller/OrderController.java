@@ -3,6 +3,7 @@ package com.namil.autotrading.controller;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
+import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,8 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderResponse> getOrders() {
-        return orderService.getOrders();
+    public List<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status) {
+        return orderService.getOrders(status);
     }
 
     @GetMapping("/orders/{id}")
@@ -41,5 +42,10 @@ public class OrderController {
     @PatchMapping("/orders/{id}/cancel")
     public OrderResponse canccelOrder(@PathVariable Long id) {
         return orderService.cancelOrder(id);
+    }
+
+    @GetMapping("/orders/status/{status}")
+    public List<OrderResponse> getOrdersByStatus(@PathVariable OrderStatus status) {
+        return orderService.getOrdersByStatus(status);
     }
 }

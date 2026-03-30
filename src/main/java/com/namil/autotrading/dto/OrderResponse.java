@@ -15,19 +15,25 @@ public class OrderResponse {
     private BigDecimal amount;
     private OrderStatus status;
     private LocalDateTime createdAt;
+    private LocalDateTime orderedAt;
+    private LocalDateTime canceledAt;
 
     public OrderResponse(Long id,
                          String market,
                          OrderSide side,
                          BigDecimal amount,
                          OrderStatus status,
-                         LocalDateTime createdAt) {
+                         LocalDateTime createdAt,
+                         LocalDateTime orderedAt,
+                         LocalDateTime canceledAt) {
         this.id = id;
         this.market = market;
         this.side = side;
         this.amount = amount;
         this.status = status;
         this.createdAt = createdAt;
+        this.orderedAt = orderedAt;
+        this.canceledAt = canceledAt;
     }
 
     public static OrderResponse from(Order order) {
@@ -37,7 +43,9 @@ public class OrderResponse {
                 order.getSide(),
                 order.getAmount(),
                 order.getStatus(),
-                order.getCreatedAt()
+                order.getCreatedAt(),
+                order.getOrderedAt(),
+                order.getCanceledAt()
         );
     }
 
@@ -63,5 +71,13 @@ public class OrderResponse {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public LocalDateTime getOrderedAt() {
+        return orderedAt;
+    }
+
+    public LocalDateTime getCanceledAt() {
+        return canceledAt;
     }
 }

@@ -16,7 +16,20 @@ GET http://localhost:8081/orders
 GET http://localhost:8081/orders/999
 
 ###
-PATCH http://localhost:8081/orders/1/ordered
+PATCH http://localhost:8081/orders/2/ordered
 
 ###
 PATCH http://localhost:8081/orders/1/cancel
+
+###
+GET http://localhost:8081/orders/status/READY
+
+###
+GET http://localhost:8081/orders/status/ORDERED
+
+###
+GET http://localhost:8081/orders?status=READY
+###
+GET http://localhost:8081/orders?status=ORDERED
+###
+GET http://localhost:8081/orders?status=CANCELED
