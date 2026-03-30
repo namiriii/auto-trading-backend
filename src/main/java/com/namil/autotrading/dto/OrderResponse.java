@@ -1,5 +1,6 @@
 package com.namil.autotrading.dto;
 
+import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
 
@@ -27,6 +28,17 @@ public class OrderResponse {
         this.amount = amount;
         this.status = status;
         this.createdAt = createdAt;
+    }
+
+    public static OrderResponse from(Order order) {
+        return new OrderResponse(
+                order.getId(),
+                order.getMarket(),
+                order.getSide(),
+                order.getAmount(),
+                order.getStatus(),
+                order.getCreatedAt()
+        );
     }
 
     public Long getId() {

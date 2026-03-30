@@ -30,27 +30,33 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return new OrderResponse(
-                savedOrder.getId(),
-                savedOrder.getMarket(),
-                savedOrder.getSide(),
-                savedOrder.getAmount(),
-                savedOrder.getStatus(),
-                savedOrder.getCreatedAt()
-        );
+        return OrderResponse.from(savedOrder);
+
+//        return new OrderResponse(
+//                savedOrder.getId(),
+//                savedOrder.getMarket(),
+//                savedOrder.getSide(),
+//                savedOrder.getAmount(),
+//                savedOrder.getStatus(),
+//                savedOrder.getCreatedAt()
+//        );
     }
 
     public List<OrderResponse> getOrders() {
         return orderRepository.findAll()
                 .stream()
-                .map(order ->new OrderResponse(
-                        order.getId(),
-                        order.getMarket(),
-                        order.getSide(),
-                        order.getAmount(),
-                        order.getStatus(),
-                        order.getCreatedAt()
-                )).toList();
+                .map(OrderResponse::from)
+                .toList();
+//        return orderRepository.findAll()
+//                .stream()
+//                .map(order ->new OrderResponse(
+//                        order.getId(),
+//                        order.getMarket(),
+//                        order.getSide(),
+//                        order.getAmount(),
+//                        order.getStatus(),
+//                        order.getCreatedAt()
+//                )).toList();
     }
 
     public Order getOrder(Long id) {
@@ -65,14 +71,15 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return new OrderResponse(
-                savedOrder.getId(),
-                savedOrder.getMarket(),
-                savedOrder.getSide(),
-                savedOrder.getAmount(),
-                savedOrder.getStatus(),
-                savedOrder.getCreatedAt()
-        );
+        return OrderResponse.from(savedOrder);
+//        return new OrderResponse(
+//                savedOrder.getId(),
+//                savedOrder.getMarket(),
+//                savedOrder.getSide(),
+//                savedOrder.getAmount(),
+//                savedOrder.getStatus(),
+//                savedOrder.getCreatedAt()
+//        );
     }
 
     public OrderResponse cancelOrder(Long id) {
@@ -84,13 +91,14 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        return new OrderResponse(
-                savedOrder.getId(),
-                savedOrder.getMarket(),
-                savedOrder.getSide(),
-                savedOrder.getAmount(),
-                savedOrder.getStatus(),
-                savedOrder.getCreatedAt()
-        );
+        return OrderResponse.from(savedOrder);
+//        return new OrderResponse(
+//                savedOrder.getId(),
+//                savedOrder.getMarket(),
+//                savedOrder.getSide(),
+//                savedOrder.getAmount(),
+//                savedOrder.getStatus(),
+//                savedOrder.getCreatedAt()
+//        );
     }
 }
