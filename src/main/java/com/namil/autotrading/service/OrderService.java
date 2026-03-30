@@ -15,6 +15,11 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
+    private Order findOrderOrThrow(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("주문없음"));
+    }
+
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
@@ -60,12 +65,14 @@ public class OrderService {
     }
 
     public Order getOrder(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("주문 없음"));
+        return findOrderOrThrow(id);
+//        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("주문 없음"));
     }
 
     public OrderResponse markAsOrdered(Long id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("주문 없음"));
+        Order order = findOrderOrThrow(id);
+//        Order order = orderRepository.findById(id)
+//                .orElseThrow(() -> new NotFoundException("주문 없음"));
 
         order.executeOrder();
 
@@ -84,8 +91,9 @@ public class OrderService {
 
     public OrderResponse cancelOrder(Long id) {
 
-        Order order = orderRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("주문 없음"));
+        Order order = findOrderOrThrow(id);
+//        Order order = orderRepository.findById(id)
+//                .orElseThrow(()-> new NotFoundException("주문 없음"));
 
         order.cancelOrder();
 
