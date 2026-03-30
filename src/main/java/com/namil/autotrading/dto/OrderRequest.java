@@ -20,6 +20,8 @@ public class OrderRequest {
     @DecimalMin(value = "0.0", inclusive = false, message = "금액은 0보다 커야 합니다.")
     private BigDecimal amount;
 
+
+
     public String getMarket() {
         return market;
     }

@@ -64,8 +64,10 @@ public class OrderService {
 //                )).toList();
     }
 
-    public Order getOrder(Long id) {
-        return findOrderOrThrow(id);
+    public OrderResponse getOrder(Long id) {
+        Order order = findOrderOrThrow(id);
+
+        return OrderResponse.from(order);
 //        return orderRepository.findById(id).orElseThrow(() -> new NotFoundException("주문 없음"));
     }
 

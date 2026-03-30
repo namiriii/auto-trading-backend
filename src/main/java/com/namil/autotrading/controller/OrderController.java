@@ -29,7 +29,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{id}")
-    public Order getOrder(@PathVariable Long id) {
+    public OrderResponse getOrder(@PathVariable Long id) {
         return orderService.getOrder(id);
     }
 
