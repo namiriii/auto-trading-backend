@@ -25,8 +25,10 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status) {
-        return orderService.getOrders(status);
+    public List<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status,
+                                         @RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "10") int size) {
+        return orderService.getOrders(status, page, size);
     }
 
     @GetMapping("/orders/{id}")
@@ -45,7 +47,9 @@ public class OrderController {
     }
 
     @GetMapping("/orders/status/{status}")
-    public List<OrderResponse> getOrdersByStatus(@PathVariable OrderStatus status) {
-        return orderService.getOrdersByStatus(status);
+    public List<OrderResponse> getOrdersByStatus(@PathVariable OrderStatus status,
+                                                 @RequestParam(defaultValue = "0") int page,
+                                                 @RequestParam(defaultValue = "10") int size) {
+        return orderService.getOrdersByStatus(status, page, size);
     }
 }

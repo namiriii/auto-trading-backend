@@ -6,6 +6,9 @@ import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.exception.NotFoundException;
 import com.namil.autotrading.repository.OrderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -48,14 +51,16 @@ public class OrderService {
 //        );
     }
 
-    public List<OrderResponse> getOrders(OrderStatus status) {
+    public List<OrderResponse> getOrders(OrderStatus status, int page, int size) {
 
-        List<Order> orders;
+        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"createAt"));
+
+        Page<Order> orders;
 
         if(status == null) {
-            orders = orderRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
+            orders = orderRepository.findAll(pageable);
         } else {
-            orders = orderRepository.findByStatusOrderByCreatedAtDesc(status);
+            orders = orderRepository.findByStatus(status, pageable);
         }
 
         return orders.stream()
@@ -121,8 +126,11 @@ public class OrderService {
 //        );
     }
 
-    public List<OrderResponse> getOrdersByStatus(OrderStatus status) {
-        return orderRepository.findByStatusOrderByCreatedAtDesc(status)
+    public List<OrderResponse> getOrdersByStatus(OrderStatus status, int page, int size) {
+
+        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        return orderRepository.findByStatus(status, pageable)
                 .stream()
                 .map(OrderResponse::from)
                 .toList();

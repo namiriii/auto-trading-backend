@@ -107,7 +107,7 @@ public class OrderServiceTest {
         orderService.createOrder(request2);
 
         //when
-        List<OrderResponse> result = orderService.getOrders(null);
+        List<OrderResponse> result = orderService.getOrders(null, 0, 10);
 
         //then
         assertThat(result).hasSize(2);
