@@ -18,3 +18,5 @@ GET http://localhost:8081/orders/999
 ###
 PATCH http://localhost:8081/orders/1/ordered
 
+###
+PATCH http://localhost:8081/orders/1/cancel

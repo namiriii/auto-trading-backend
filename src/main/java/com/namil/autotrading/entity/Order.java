@@ -68,4 +68,12 @@ public class Order {
         }
         this.status = OrderStatus.ORDERED;
     }
+
+    // READY 상태의 주문만 취소(CANCELED) 상태로 변경
+    public void cancelOrder() {
+        if(this.status != OrderStatus.READY) {
+            throw new IllegalStateException("READY 상태의 주문만 취소할 수 있습니다.");
+        }
+        this.status = OrderStatus.CANCELED;
+    }
 }

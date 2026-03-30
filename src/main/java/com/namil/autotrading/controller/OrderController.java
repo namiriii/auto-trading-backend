@@ -37,4 +37,9 @@ public class OrderController {
     public OrderResponse markAsOrdered(@PathVariable Long id) {
         return orderService.markAsOrdered(id);
     }
+
+    @PatchMapping("/orders/{id}/cancel")
+    public OrderResponse canccelOrder(@PathVariable Long id) {
+        return orderService.cancelOrder(id);
+    }
 }
