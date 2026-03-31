@@ -1,5 +1,6 @@
 package com.namil.autotrading.service;
 
+import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
@@ -108,12 +109,14 @@ public class OrderServiceTest {
         orderService.createOrder(request2);
 
         //when
-        Page<OrderResponse> result = orderService.getOrders(null, 0, 10);
+        OrderPageResponse result = orderService.getOrders(null, 0, 10);
 
         //then
-        assertThat(result).hasSize(2);
+        assertThat(result.getData()).hasSize(2);
         assertThat(result.getTotalElements()).isEqualTo(2);
         assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getPage()).isEqualTo(0);
+        assertThat(result.getSize()).isEqualTo(10);
     }
 
     @Test
@@ -160,11 +163,11 @@ public class OrderServiceTest {
         orderService.markAsOrdered(saved1.getId());
 
         //when
-        Page<OrderResponse> result = orderService.getOrders(OrderStatus.READY,0,10);
+        OrderPageResponse result = orderService.getOrders(OrderStatus.READY,0,10);
 
         //then
-        assertThat(result.getContent()).hasSize(1);
-        assertThat(result.getContent().get(0).getStatus()).isEqualTo(OrderStatus.READY);
+        assertThat(result.getData()).hasSize(1);
+        assertThat(result.getData().get(0).getStatus()).isEqualTo(OrderStatus.READY);
         assertThat(result.getTotalElements()).isEqualTo(1);
     }
 
@@ -181,12 +184,13 @@ public class OrderServiceTest {
         }
 
         //when
-        Page<OrderResponse> result = orderService.getOrders(null,0,2);
+        OrderPageResponse result = orderService.getOrders(null,0,2);
 
         //then
-        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getData()).hasSize(2);
         assertThat(result.getTotalElements()).isEqualTo(5);
         assertThat(result.getTotalPages()).isEqualTo(3);
-        assertThat(result.getNumber()).isEqualTo(0);
+        assertThat(result.getPage()).isEqualTo(0);
+        assertThat(result.getSize()).isEqualTo(2);
     }
 }

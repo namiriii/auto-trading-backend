@@ -1,11 +1,13 @@
 package com.namil.autotrading.service;
 
+import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.exception.NotFoundException;
 import com.namil.autotrading.repository.OrderRepository;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +53,8 @@ public class OrderService {
 //        );
     }
 
-    public Page<OrderResponse> getOrders(OrderStatus status, int page, int size) {
+    //주문 목록 조회(페이지 + 정렬 + 상태 필터)
+    public OrderPageResponse getOrders(OrderStatus status, int page, int size) {
 
         Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"createdAt"));
 
@@ -65,7 +68,15 @@ public class OrderService {
             orders = orderRepository.findByStatus(status, pageable);
         }
 
-        return orders.map(OrderResponse::from);
+        return new OrderPageResponse(
+                orders.getContent().stream()
+                        .map(OrderResponse::from)
+                        .toList(),
+                orders.getNumber(),
+                orders.getSize(),
+                orders.getTotalElements(),
+                orders.getTotalPages()
+        );
 
     }
 

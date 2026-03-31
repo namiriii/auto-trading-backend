@@ -1,5 +1,6 @@
 package com.namil.autotrading.controller;
 
+import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
@@ -26,9 +27,9 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public Page<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status,
-                                         @RequestParam(defaultValue = "0") int page,
-                                         @RequestParam(defaultValue = "10") int size) {
+    public OrderPageResponse getOrders(@RequestParam(required = false) OrderStatus status,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size) {
         return orderService.getOrders(status, page, size);
     }
 
