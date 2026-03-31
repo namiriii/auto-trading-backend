@@ -7,6 +7,7 @@ import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.exception.NotFoundException;
+import com.namil.autotrading.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,11 +19,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
+@SpringBootTest(properties = "spring.task.scheduling.enabled=false")
 public class OrderServiceTest {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     void 주문생성() {
@@ -192,5 +195,45 @@ public class OrderServiceTest {
         assertThat(result.getTotalPages()).isEqualTo(3);
         assertThat(result.getPage()).isEqualTo(0);
         assertThat(result.getSize()).isEqualTo(2);
+    }
+
+    @Test
+    void READY가_3개_미만이면_자동주문_생성() {
+        //given
+        for (int i = 0; i < 3; i++) {
+            OrderRequest request = new OrderRequest();
+            request.setMarket("KRW-BTC");
+            request.setSide(OrderSide.BUY);
+            request.setAmount(new BigDecimal("10000"));
+
+            orderService.createOrder(request);
+        }
+
+        //when
+        orderService.createOrderIfReadyCountLessThan3();
+
+        //then
+        long count = orderRepository.countByStatus(OrderStatus.READY);
+        assertThat(count).isEqualTo(3);
+    }
+
+    @Test
+    void READY가_3개_이상이면_자동주문_생성되지_않는다() {
+        //given
+        for (int i = 0; i < 3; i++) {
+            OrderRequest request = new OrderRequest();
+            request.setMarket("KRW-BTC");
+            request.setSide(OrderSide.BUY);
+            request.setAmount(new BigDecimal("10000"));
+
+            orderService.createOrder(request);
+        }
+
+        //when
+        orderService.createOrderIfReadyCountLessThan3();
+
+        //then
+        long count = orderRepository.countByStatus(OrderStatus.READY);
+        assertThat(count).isEqualTo(3);
     }
 }
