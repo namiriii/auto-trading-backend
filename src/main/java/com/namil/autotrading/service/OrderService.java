@@ -51,31 +51,22 @@ public class OrderService {
 //        );
     }
 
-    public List<OrderResponse> getOrders(OrderStatus status, int page, int size) {
+    public Page<OrderResponse> getOrders(OrderStatus status, int page, int size) {
 
-        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"createAt"));
+        Pageable pageable = PageRequest.of(page,size,Sort.by(Sort.Direction.DESC,"createdAt"));
 
         Page<Order> orders;
 
         if(status == null) {
+            //전체 주문 주회
             orders = orderRepository.findAll(pageable);
         } else {
+            //상태별 주문 조회
             orders = orderRepository.findByStatus(status, pageable);
         }
 
-        return orders.stream()
-                .map(OrderResponse::from)
-                .toList();
-//        return orderRepository.findAll()
-//                .stream()
-//                .map(order ->new OrderResponse(
-//                        order.getId(),
-//                        order.getMarket(),
-//                        order.getSide(),
-//                        order.getAmount(),
-//                        order.getStatus(),
-//                        order.getCreatedAt()
-//                )).toList();
+        return orders.map(OrderResponse::from);
+
     }
 
     public OrderResponse getOrder(Long id) {

@@ -1,3 +1,4 @@
+#생성
 POST http://localhost:8081/order
 Content-Type: application/json
 
@@ -9,16 +10,19 @@ Content-Type: application/json
 
 ###
 
+#전체조회
 GET http://localhost:8081/orders
 
 ###
-
+#id로조회
 GET http://localhost:8081/orders/999
 
 ###
+#해당 id의 status를 ordered로 변경
 PATCH http://localhost:8081/orders/3/ordered
 
 ###
+#해당 id의 status를 cancel로 변경
 PATCH http://localhost:8081/orders/1/cancel
 
 ###
@@ -42,3 +46,8 @@ GET http://localhost:8081/orders?page=1&size=2
 GET http://localhost:8081/orders?page=2&size=2
 ###
 GET http://localhost:8081/orders?status=READY&page=0&size=3
+
+###
+GET http://localhost:8081/orders?page=0&size=2
+###
+GET http://localhost:8081/orders?page=2&size=2

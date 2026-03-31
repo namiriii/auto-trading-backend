@@ -9,6 +9,7 @@ import com.namil.autotrading.exception.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -107,10 +108,12 @@ public class OrderServiceTest {
         orderService.createOrder(request2);
 
         //when
-        List<OrderResponse> result = orderService.getOrders(null, 0, 10);
+        Page<OrderResponse> result = orderService.getOrders(null, 0, 10);
 
         //then
         assertThat(result).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(2);
+        assertThat(result.getTotalPages()).isEqualTo(1);
     }
 
     @Test
@@ -136,5 +139,54 @@ public class OrderServiceTest {
         assertThatThrownBy(()->orderService.getOrder(999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessage("주문 없음");
+    }
+
+    @Test
+    void 주문_상태조회_READY() {
+        //given
+        OrderRequest request1 = new OrderRequest();
+        request1.setMarket("KRW-BTC");
+        request1.setSide(OrderSide.BUY);
+        request1.setAmount(new BigDecimal("10000"));
+
+        OrderRequest request2 = new OrderRequest();
+        request2.setMarket("KRW-ETH");
+        request2.setSide(OrderSide.BUY);
+        request2.setAmount(new BigDecimal("20000"));
+
+        OrderResponse saved1 = orderService.createOrder(request1);
+        orderService.createOrder(request2);
+
+        orderService.markAsOrdered(saved1.getId());
+
+        //when
+        Page<OrderResponse> result = orderService.getOrders(OrderStatus.READY,0,10);
+
+        //then
+        assertThat(result.getContent()).hasSize(1);
+        assertThat(result.getContent().get(0).getStatus()).isEqualTo(OrderStatus.READY);
+        assertThat(result.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    void 주문_페이징조회() {
+        //given
+        for(int i = 0; i<5; i++) {
+            OrderRequest request = new OrderRequest();
+            request.setMarket("KRW-BTC");
+            request.setSide(OrderSide.BUY);
+            request.setAmount(new BigDecimal("10000"));
+
+            orderService.createOrder(request);
+        }
+
+        //when
+        Page<OrderResponse> result = orderService.getOrders(null,0,2);
+
+        //then
+        assertThat(result.getContent()).hasSize(2);
+        assertThat(result.getTotalElements()).isEqualTo(5);
+        assertThat(result.getTotalPages()).isEqualTo(3);
+        assertThat(result.getNumber()).isEqualTo(0);
     }
 }

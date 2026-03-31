@@ -6,6 +6,7 @@ import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.service.OrderService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class OrderController {
     }
 
     @GetMapping("/orders")
-    public List<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status,
+    public Page<OrderResponse> getOrders(@RequestParam(required = false) OrderStatus status,
                                          @RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "10") int size) {
         return orderService.getOrders(status, page, size);
