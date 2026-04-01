@@ -5,6 +5,7 @@ import com.namil.autotrading.service.OrderService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
@@ -25,11 +26,9 @@ public class OrderScheduler {
     //5초마다 체크
     @Scheduled(fixedRate = 5000)
     public void createOrderAutomatically() {
-        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
-        int targetPrice = 100000000;
 
-        System.out.println("현재 가격 : " + currentPrice);
+        List<StrategyType> strategies = List.of(StrategyType.PRICE,StrategyType.READY_COUNT);
 
-        orderService.createOrderByStrategy(StrategyType.PRICE,currentPrice);
+        orderService.createOrdersByStrategies(strategies);
     }
 }

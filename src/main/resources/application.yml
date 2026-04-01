@@ -1,6 +1,8 @@
 server:
   port: 8081
 
+
+
 spring:
   datasource:
     url: jdbc:h2:file:./data/testdb
@@ -17,3 +19,8 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: create
+
+app:
+  strategies:
+    - PRICE
+    - READY_COUNT

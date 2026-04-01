@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class OrderService {
@@ -190,6 +191,69 @@ public class OrderService {
             } else {
                 System.out.println("PRICE 전략 -> 조건 불만족");
             }
+        }
+    }
+
+    //가격 전략 : 현재 가격이 목표 가격 이하인지 판단
+    public boolean isPriceStrategyStatisfied(int currentPrice, int targetPrice) {
+        return currentPrice <= targetPrice;
+    }
+
+    //READY_COUNT 전략 : READY 주문 개수가 3개 미만인지 판단
+    public boolean isReadyCountStrategySatisfied() {
+        long readyCount = orderRepository.countByStatus(OrderStatus.READY);
+        return readyCount < 3;
+    }
+
+    //선택한 전략에 따라 자동 주문 실행
+    public void createOrderByStrategy(StrategyType strategyType) {
+
+        if(strategyType == StrategyType.PRICE) {
+            int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+            int targetPrice = 100000000;
+
+            System.out.println("현재 가격 " + currentPrice);
+
+            createOrderIfPriceIsBelow(currentPrice,targetPrice);
+        }
+
+        if(strategyType == StrategyType.READY_COUNT) {
+            createOrderIfReadyCountLessThan3();
+        }
+
+    }
+
+    //여러 전략을 동시에 실행
+    public void createOrdersByStrategies(List<StrategyType> strategies) {
+
+        boolean canOrder = true;
+
+        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+        int targetPrice = 100000000;
+
+        for (StrategyType strategy : strategies) {
+            if(strategy == StrategyType.PRICE) {
+                if(!isPriceStrategyStatisfied(currentPrice, targetPrice)) {
+                    canOrder = false;
+                }
+            } else if (strategy == StrategyType.READY_COUNT) {
+                if(!isReadyCountStrategySatisfied()) {
+                    canOrder = false;
+                }
+            }
+        }
+
+        if(canOrder) {
+            OrderRequest request = new OrderRequest();
+            request.setMarket("KRW-BTC");
+            request.setSide(OrderSide.BUY);
+            request.setAmount(new BigDecimal("10000"));
+
+            createOrder(request);
+
+            System.out.println("모든 전략 만족 -> 주문 생성");
+        } else {
+            System.out.println("전략 조건 불만족 -> 주문 안함");
         }
     }
 }
