@@ -1,5 +1,6 @@
 package com.namil.autotrading.scheduler;
 
+import com.namil.autotrading.config.StrategyProperties;
 import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.service.OrderService;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,17 +19,17 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OrderScheduler {
 
     private final OrderService orderService;
+    private final StrategyProperties strategyProperties;
 
-    public OrderScheduler(OrderService orderService) {
+    public OrderScheduler(OrderService orderService, StrategyProperties strategyProperties) {
         this.orderService = orderService;
+        this.strategyProperties = strategyProperties;
     }
 
     //5초마다 체크
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 1000)
     public void createOrderAutomatically() {
 
-        List<StrategyType> strategies = List.of(StrategyType.PRICE,StrategyType.READY_COUNT);
-
-        orderService.createOrdersByStrategies(strategies);
+        orderService.createOrdersByStrategies(strategyProperties.getStrategies());
     }
 }
