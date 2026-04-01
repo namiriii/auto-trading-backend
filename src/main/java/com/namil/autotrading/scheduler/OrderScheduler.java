@@ -1,14 +1,11 @@
 package com.namil.autotrading.scheduler;
 
-import com.namil.autotrading.dto.OrderRequest;
-import com.namil.autotrading.entity.OrderSide;
+import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.service.OrderService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 //@ConditionalOnProperty(
@@ -28,6 +25,11 @@ public class OrderScheduler {
     //5초마다 체크
     @Scheduled(fixedRate = 5000)
     public void createOrderAutomatically() {
-        orderService.createOrderIfReadyCountLessThan3();
+        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+        int targetPrice = 100000000;
+
+        System.out.println("현재 가격 : " + currentPrice);
+
+        orderService.createOrderByStrategy(StrategyType.PRICE,currentPrice);
     }
 }

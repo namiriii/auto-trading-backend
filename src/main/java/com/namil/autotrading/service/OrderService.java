@@ -6,6 +6,7 @@ import com.namil.autotrading.dto.OrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
+import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.exception.NotFoundException;
 import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.data.domain.Page;
@@ -151,6 +152,44 @@ public class OrderService {
             System.out.println("조건 만족 -> 주문 생성");
         } else {
             System.out.println("조건 불만족 -> 주문 안함");
+        }
+    }
+
+    //현재 가격이 목표 가격 이하이면 자동 주문 생성
+    public void createOrderIfPriceIsBelow(int currentPrice, int targetPrice) {
+
+        if(currentPrice <= targetPrice) {
+            OrderRequest request = new OrderRequest();
+            request.setSide(OrderSide.BUY);
+            request.setAmount(new BigDecimal("10000"));
+
+            createOrder(request);
+
+            System.out.println("가격 조건 만족 -> 주문 생성");
+        } else {
+            System.out.println("가격 조건 불만족 -> 주문 안함");
+        }
+
+    }
+
+    //전략 기반 자동 주문
+    public void createOrderByStrategy(StrategyType strategyType, int currentPrice) {
+
+        if(strategyType == StrategyType.PRICE) {
+            int targetPrice = 100000000;
+
+            if(currentPrice <= targetPrice) {
+                OrderRequest request = new OrderRequest();
+                request.setMarket("KRW-BTC");
+                request.setSide(OrderSide.BUY);
+                request.setAmount(new BigDecimal("10000"));
+
+                createOrder(request);
+
+                System.out.println("PRICE 전략 -> 주문 생성");
+            } else {
+                System.out.println("PRICE 전략 -> 조건 불만족");
+            }
         }
     }
 }
