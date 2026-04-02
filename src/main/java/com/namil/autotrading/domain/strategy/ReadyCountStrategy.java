@@ -8,12 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReadyCountStrategy implements OrderStrategy{
 
-    private final OrderRepository orderRepository;
-
-    public ReadyCountStrategy(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
     @Override
     public StrategyType getType() {
         return StrategyType.READY_COUNT;
@@ -21,8 +15,8 @@ public class ReadyCountStrategy implements OrderStrategy{
 
     @Override
     public boolean isSatisfied(StrategyContext context) {
-        long readyCount = orderRepository.countByStatus(OrderStatus.READY);
-        return readyCount < 3;
+
+        return context.getReadyCount() < 3;
     }
 
     @Override

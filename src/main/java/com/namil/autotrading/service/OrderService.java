@@ -233,7 +233,9 @@ public class OrderService {
         boolean canOrder = true;
 
         int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
-        StrategyContext context = new StrategyContext(currentPrice);
+        long readyCount = orderRepository.countByStatus(OrderStatus.READY);
+
+        StrategyContext context = new StrategyContext(currentPrice, readyCount);
 
         //Spring이 주입해준 모든 전략 객체를 하나씩 확인
         for(OrderStrategy strategy : orderStrategies) {
