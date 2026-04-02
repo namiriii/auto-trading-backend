@@ -225,25 +225,23 @@ public class OrderService {
 
     }
 
-    //전략 타입에 맞는 전략 객체 찾기
-    private OrderStrategy findStrategy(StrategyType strategyType) {
-        return orderStrategies.stream()
-                .filter(strategy->strategy.getType() == strategyType)
-                .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("전략을 찾을 수 없습니다."));
-    }
 
-    //여러 전략을 동시에 실행
+    //yml에서 선택된 전략들만 검사하고, 모두 만족할 때만 주문 생성
     public void createOrdersByStrategies(List<StrategyType> strategyTypes) {
 
         boolean canOrder = true;
 
-        for(StrategyType strategyType : strategyTypes) {
-            OrderStrategy strategy = findStrategy(strategyType);
+        //Spring이 주입해준 모든 전략 객체를 하나씩 확인
+        for(OrderStrategy strategy : orderStrategies) {
+
+            //현재 전략이 yml에 설정된 전략 목록에 없으면 검사하지 않고 건너뜀
+            if(!strategyTypes.contains(strategy.getType())) {
+                continue;
+            }
 
             boolean satisfied = strategy.isSatisfied();
 
-            if(satisfied) {
+            if (satisfied) {
                 System.out.println(strategy.getName() + " 전략 만족");
             } else {
                 System.out.println(strategy.getName() + " 전략 불만족");
