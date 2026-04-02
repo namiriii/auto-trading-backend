@@ -20,7 +20,7 @@ public class ReadyCountStrategy implements OrderStrategy{
     }
 
     @Override
-    public boolean isSatisfied() {
+    public boolean isSatisfied(StrategyContext context) {
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
         return readyCount < 3;
     }

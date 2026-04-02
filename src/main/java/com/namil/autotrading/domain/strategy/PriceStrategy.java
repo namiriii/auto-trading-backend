@@ -15,8 +15,8 @@ public class PriceStrategy implements OrderStrategy{
     }
 
     @Override
-    public boolean isSatisfied() {
-        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+    public boolean isSatisfied(StrategyContext context) {
+        int currentPrice = context.getCurrentPrice();;
         int targetPrice = 100000000;
 
         System.out.println("현재 가격: " + currentPrice);

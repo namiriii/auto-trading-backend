@@ -1,6 +1,7 @@
 package com.namil.autotrading.service;
 
 import com.namil.autotrading.domain.strategy.OrderStrategy;
+import com.namil.autotrading.domain.strategy.StrategyContext;
 import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
@@ -231,6 +232,9 @@ public class OrderService {
 
         boolean canOrder = true;
 
+        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+        StrategyContext context = new StrategyContext(currentPrice);
+
         //Spring이 주입해준 모든 전략 객체를 하나씩 확인
         for(OrderStrategy strategy : orderStrategies) {
 
@@ -239,7 +243,7 @@ public class OrderService {
                 continue;
             }
 
-            boolean satisfied = strategy.isSatisfied();
+            boolean satisfied = strategy.isSatisfied(context);
 
             if (satisfied) {
                 System.out.println(strategy.getName() + " 전략 만족");
