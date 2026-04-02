@@ -1,5 +1,6 @@
 package com.namil.autotrading.service;
 
+import com.namil.autotrading.domain.strategy.OrderStrategy;
 import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
@@ -24,14 +25,16 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final List<OrderStrategy> orderStrategies;
 
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
     }
 
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies) {
         this.orderRepository = orderRepository;
+        this.orderStrategies = orderStrategies;
     }
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -97,8 +100,7 @@ public class OrderService {
     public OrderResponse cancelOrder(Long id) {
 
         Order order = findOrderOrThrow(id);
-//        Order order = orderRepository.findById(id)
-//                .orElseThrow(()-> new NotFoundException("주문 없음"));
+
 
         order.cancelOrder();
 
@@ -195,7 +197,7 @@ public class OrderService {
     }
 
     //가격 전략 : 현재 가격이 목표 가격 이하인지 판단
-    public boolean isPriceStrategyStatisfied(int currentPrice, int targetPrice) {
+    public boolean isPriceStrategySatisfied(int currentPrice, int targetPrice) {
         return currentPrice <= targetPrice;
     }
 
@@ -223,23 +225,29 @@ public class OrderService {
 
     }
 
+    //전략 타입에 맞는 전략 객체 찾기
+    private OrderStrategy findStrategy(StrategyType strategyType) {
+        return orderStrategies.stream()
+                .filter(strategy->strategy.getType() == strategyType)
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("전략을 찾을 수 없습니다."));
+    }
+
     //여러 전략을 동시에 실행
-    public void createOrdersByStrategies(List<StrategyType> strategies) {
+    public void createOrdersByStrategies(List<StrategyType> strategyTypes) {
 
         boolean canOrder = true;
 
-        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
-        int targetPrice = 100000000;
+        for(StrategyType strategyType : strategyTypes) {
+            OrderStrategy strategy = findStrategy(strategyType);
 
-        for (StrategyType strategy : strategies) {
-            if(strategy == StrategyType.PRICE) {
-                if(!isPriceStrategyStatisfied(currentPrice, targetPrice)) {
-                    canOrder = false;
-                }
-            } else if (strategy == StrategyType.READY_COUNT) {
-                if(!isReadyCountStrategySatisfied()) {
-                    canOrder = false;
-                }
+            boolean satisfied = strategy.isSatisfied();
+
+            if(satisfied) {
+                System.out.println(strategy.getName() + " 전략 만족");
+            } else {
+                System.out.println(strategy.getName() + " 전략 불만족");
+                canOrder = false;
             }
         }
 

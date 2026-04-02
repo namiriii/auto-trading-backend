@@ -27,7 +27,7 @@ public class OrderScheduler {
     }
 
     //5초마다 체크
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 5000)
     public void createOrderAutomatically() {
 
         orderService.createOrdersByStrategies(strategyProperties.getStrategies());
