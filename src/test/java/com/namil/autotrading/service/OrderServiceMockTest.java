@@ -2,6 +2,7 @@ package com.namil.autotrading.service;
 
 import com.namil.autotrading.domain.strategy.OrderStrategy;
 import com.namil.autotrading.domain.strategy.StrategyType;
+import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +17,12 @@ public class OrderServiceMockTest {
         OrderRepository orderRepository = mock(OrderRepository.class);
         OrderStrategy priceStrategy = mock(OrderStrategy.class);
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+        PriceProvider priceProvider = mock(PriceProvider.class);
 
         OrderService orderService = new OrderService(
                 orderRepository,
-                List.of(priceStrategy,readyCountStrategy)
+                List.of(priceStrategy,readyCountStrategy),
+                priceProvider
         );
     }
 
@@ -32,6 +35,7 @@ public class OrderServiceMockTest {
         OrderStrategy priceStrategy = mock(OrderStrategy.class);
         //가짜 전략 만들기 레디카운트전략
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+        PriceProvider priceProvider = mock(PriceProvider.class);
 
         //priceStrategy.getType()이 불리면 PRICE를 리턴하라고 설정
         when(priceStrategy.getType()).thenReturn(StrategyType.PRICE);
@@ -47,6 +51,8 @@ public class OrderServiceMockTest {
         //readyCountStrategy.isSatisfied()에 어떤 context가 들어오던(any()) 무조건 true반환
         when(readyCountStrategy.isSatisfied(org.mockito.ArgumentMatchers.any())).thenReturn(true);
 
+        when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+
         //save 호출 시 전달된 Order 객체 그대로 반환
         //save 호출되면 그때 들어온 값을 그대로 돌려달라고 설정 save(order)하면 order를 그대로 반환
         when(orderRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
@@ -55,7 +61,8 @@ public class OrderServiceMockTest {
         //안에 넣는 데이터는 가짜
         OrderService orderService = new OrderService(
                 orderRepository,
-                List.of(priceStrategy,readyCountStrategy)
+                List.of(priceStrategy,readyCountStrategy),
+                priceProvider
         );
 
         //when
@@ -76,6 +83,7 @@ public class OrderServiceMockTest {
         OrderRepository orderRepository = mock(OrderRepository.class);
         OrderStrategy priceStrategy = mock(OrderStrategy.class);
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+        PriceProvider priceProvider = mock(PriceProvider.class);
 
         when(priceStrategy.getType()).thenReturn(StrategyType.PRICE);
         when(readyCountStrategy.getType()).thenReturn(StrategyType.READY_COUNT);
@@ -89,8 +97,12 @@ public class OrderServiceMockTest {
         //READY_COUNT는 성공
         when(readyCountStrategy.isSatisfied(any())).thenReturn(true);
 
+        when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+
         OrderService orderService = new OrderService(
-                orderRepository, List.of(priceStrategy, readyCountStrategy)
+                orderRepository,
+                List.of(priceStrategy, readyCountStrategy),
+                priceProvider
         );
 
         //when

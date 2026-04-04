@@ -10,6 +10,7 @@ import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.exception.NotFoundException;
+import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,15 +28,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final List<OrderStrategy> orderStrategies;
+    private final PriceProvider priceProvider;
 
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
     }
 
-    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies) {
+    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies, PriceProvider priceProvider) {
         this.orderRepository = orderRepository;
         this.orderStrategies = orderStrategies;
+        this.priceProvider = priceProvider;
     }
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -232,7 +235,7 @@ public class OrderService {
 
         boolean canOrder = true;
 
-        int currentPrice = ThreadLocalRandom.current().nextInt(90000000,110000001);
+        int currentPrice = priceProvider.getCurrentPrice();
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
 
         StrategyContext context = new StrategyContext(currentPrice, readyCount);
