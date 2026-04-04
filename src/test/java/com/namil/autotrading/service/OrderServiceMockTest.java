@@ -69,4 +69,37 @@ public class OrderServiceMockTest {
         verify(orderRepository, times(1)).save(any());
 
     }
+
+    @Test
+    void 전략_하나라도_실패하면_주문_생성_안함() {
+        //given
+        OrderRepository orderRepository = mock(OrderRepository.class);
+        OrderStrategy priceStrategy = mock(OrderStrategy.class);
+        OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+
+        when(priceStrategy.getType()).thenReturn(StrategyType.PRICE);
+        when(readyCountStrategy.getType()).thenReturn(StrategyType.READY_COUNT);
+
+        when(priceStrategy.getName()).thenReturn("PRICE");
+        when(readyCountStrategy.getName()).thenReturn("READY_COUNT");
+
+        //PRICE는 실패
+        when(priceStrategy.isSatisfied(any())).thenReturn(false);
+
+        //READY_COUNT는 성공
+        when(readyCountStrategy.isSatisfied(any())).thenReturn(true);
+
+        OrderService orderService = new OrderService(
+                orderRepository, List.of(priceStrategy, readyCountStrategy)
+        );
+
+        //when
+        orderService.createOrdersByStrategies(List.of(
+                StrategyType.PRICE,
+                StrategyType.READY_COUNT
+        ));
+
+        //then
+        verify(orderRepository, never()).save(any());
+    }
 }
