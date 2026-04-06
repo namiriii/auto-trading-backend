@@ -1,5 +1,6 @@
 package com.namil.autotrading.domain.strategy;
 
+import com.namil.autotrading.config.StrategyConfigProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -8,6 +9,11 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 public class PriceStrategy implements OrderStrategy{
 
+    private final StrategyConfigProperties strategyConfigProperties;
+
+    public PriceStrategy(StrategyConfigProperties strategyConfigProperties) {
+        this.strategyConfigProperties = strategyConfigProperties;
+    }
 
     @Override
     public StrategyType getType() {
@@ -17,7 +23,7 @@ public class PriceStrategy implements OrderStrategy{
     @Override
     public boolean isSatisfied(StrategyContext context) {
         int currentPrice = context.getCurrentPrice();;
-        int targetPrice = 100000000;
+        int targetPrice = strategyConfigProperties.getPrice().getTargetPrice();
 
         return currentPrice <= targetPrice;
     }

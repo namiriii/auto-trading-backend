@@ -1,5 +1,6 @@
 package com.namil.autotrading.domain.strategy;
 
+import com.namil.autotrading.config.StrategyConfigProperties;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.stereotype.Component;
@@ -8,6 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReadyCountStrategy implements OrderStrategy{
 
+    private final StrategyConfigProperties strategyConfigProperties;
+
+    public ReadyCountStrategy(StrategyConfigProperties strategyConfigProperties) {
+        this.strategyConfigProperties = strategyConfigProperties;
+    }
+
     @Override
     public StrategyType getType() {
         return StrategyType.READY_COUNT;
@@ -15,8 +22,8 @@ public class ReadyCountStrategy implements OrderStrategy{
 
     @Override
     public boolean isSatisfied(StrategyContext context) {
-
-        return context.getReadyCount() < 3;
+        long maxReadyCount = strategyConfigProperties.getReadyCount().getMaxReadyCount();
+        return context.getReadyCount() < maxReadyCount;
     }
 
     @Override

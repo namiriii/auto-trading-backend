@@ -25,3 +25,11 @@ app:
     - PRICE
     - READY_COUNT
     - MOVING_AVERAGE
+
+  strategy-config:
+    price:
+      target-price: 100000000
+    ready-count:
+      max-ready-count: 3
+    moving-average:
+      period: 5
