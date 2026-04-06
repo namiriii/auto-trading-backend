@@ -32,6 +32,8 @@ public class OrderService {
     private final PriceProvider priceProvider;
     private final AveragePriceProvider averagePriceProvider;
 
+    private boolean isHolding = false;
+
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
@@ -53,6 +55,7 @@ public class OrderService {
                 OrderStatus.READY
         );
 
+        isHolding = true;
         Order savedOrder = orderRepository.save(order);
 
         return OrderResponse.from(savedOrder);
@@ -241,7 +244,6 @@ public class OrderService {
         int currentPrice = priceProvider.getCurrentPrice();
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
         double averagePrice = averagePriceProvider.getAveragePrice(currentPrice);
-        boolean isHolding = false;
 
         System.out.println("현재 가격 : " + currentPrice);
         System.out.printf("평균 가격 : %.0f%n", averagePrice);
