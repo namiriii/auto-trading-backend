@@ -16,7 +16,7 @@ public class MovingAverageStrategyTest {
         properties.setMovingAverage(movingAverage);
 
         MovingAverageStrategy strategy = new MovingAverageStrategy(properties);
-        StrategyContext context = new StrategyContext(95000000,0,100000000.0);
+        StrategyContext context = new StrategyContext(95000000,0,100000000.0,false);
 
         //when
         boolean result = strategy.isSatisfied(context);
@@ -35,7 +35,7 @@ public class MovingAverageStrategyTest {
         properties.setMovingAverage(movingAverage);
 
         MovingAverageStrategy strategy = new MovingAverageStrategy(properties);
-        StrategyContext context = new StrategyContext(105000000,0,100000000.0);
+        StrategyContext context = new StrategyContext(105000000,0,100000000.0,false);
 
         //when
         boolean result = strategy.isSatisfied(context);

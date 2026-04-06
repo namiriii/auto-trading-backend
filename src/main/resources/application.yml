@@ -25,6 +25,7 @@ app:
     - PRICE
     - READY_COUNT
     - MOVING_AVERAGE
+    - NOT_HOLDING
 
   strategy-config:
     price:

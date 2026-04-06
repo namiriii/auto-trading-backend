@@ -16,7 +16,7 @@ public class ReadyCountStrategyTest {
         properties.setReadyCount(readyCount);
 
         ReadyCountStrategy strategy = new ReadyCountStrategy(properties);
-        StrategyContext context = new StrategyContext(0, 2, 0.0);
+        StrategyContext context = new StrategyContext(0, 2, 0.0,false);
 
         //when
         boolean result = strategy.isSatisfied(context);
@@ -34,7 +34,7 @@ public class ReadyCountStrategyTest {
         properties.setReadyCount(readyCount);
 
         ReadyCountStrategy strategy = new ReadyCountStrategy(properties);
-        StrategyContext context = new StrategyContext(0, 3, 0.0);
+        StrategyContext context = new StrategyContext(0, 3, 0.0,false);
 
         //when
         boolean result = strategy.isSatisfied(context);

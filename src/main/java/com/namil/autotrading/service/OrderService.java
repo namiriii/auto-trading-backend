@@ -241,12 +241,13 @@ public class OrderService {
         int currentPrice = priceProvider.getCurrentPrice();
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
         double averagePrice = averagePriceProvider.getAveragePrice(currentPrice);
+        boolean isHolding = false;
 
         System.out.println("현재 가격 : " + currentPrice);
         System.out.printf("평균 가격 : %.0f%n", averagePrice);
 
         StrategyContext context = new StrategyContext(
-                currentPrice, readyCount, averagePrice);
+                currentPrice, readyCount, averagePrice, isHolding);
 
         //Spring이 주입해준 모든 전략 객체를 하나씩 확인
         for(OrderStrategy strategy : orderStrategies) {

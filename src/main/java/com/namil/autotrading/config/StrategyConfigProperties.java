@@ -1,5 +1,6 @@
 package com.namil.autotrading.config;
 
+import com.namil.autotrading.domain.strategy.NotHoldingStrategy;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +45,17 @@ public class StrategyConfigProperties {
         }
     }
 
+    public static class NotHolding {
+        private boolean isHolding;
+
+        public boolean isHolding() {
+            return isHolding;
+        }
+        public void setHolding(boolean isHolding) {
+            this.isHolding = isHolding;
+        }
+    }
+
     public Price getPrice() {
         return price;
     }
@@ -67,4 +79,5 @@ public class StrategyConfigProperties {
     public void setMovingAverage(MovingAverage movingAverage) {
         this.movingAverage = movingAverage;
     }
+
 }
