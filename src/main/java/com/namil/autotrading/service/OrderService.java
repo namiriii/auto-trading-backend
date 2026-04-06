@@ -237,8 +237,13 @@ public class OrderService {
 
         int currentPrice = priceProvider.getCurrentPrice();
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
+        double averagePrice = currentPrice + ThreadLocalRandom.current().nextInt(-500000,500001);
 
-        StrategyContext context = new StrategyContext(currentPrice, readyCount);
+        System.out.println("현재 가격 : " + currentPrice);
+        System.out.printf("평균 가격 : %.0f%n", averagePrice);
+
+        StrategyContext context = new StrategyContext(
+                currentPrice, readyCount, averagePrice);
 
         //Spring이 주입해준 모든 전략 객체를 하나씩 확인
         for(OrderStrategy strategy : orderStrategies) {
@@ -250,12 +255,13 @@ public class OrderService {
 
             boolean satisfied = strategy.isSatisfied(context);
 
-            if (satisfied) {
+            if(satisfied) {
                 System.out.println(strategy.getName() + " 전략 만족");
             } else {
                 System.out.println(strategy.getName() + " 전략 불만족");
                 canOrder = false;
             }
+
         }
 
         if(canOrder) {

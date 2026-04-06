@@ -5,10 +5,12 @@ public class StrategyContext {
 
     private final int currentPrice;
     private final long readyCount;
+    private final double averagePrice;
 
-    public StrategyContext(int currentPrice, long readyCount) {
+    public StrategyContext(int currentPrice, long readyCount, double averagePrice) {
         this.currentPrice = currentPrice;
         this.readyCount = readyCount;
+        this.averagePrice = averagePrice;
     }
 
     public int getCurrentPrice() {
@@ -17,5 +19,9 @@ public class StrategyContext {
 
     public long getReadyCount() {
         return readyCount;
+    }
+
+    public double getAveragePrice() {
+        return averagePrice;
     }
 }

@@ -24,3 +24,4 @@ app:
   strategies:
     - PRICE
     - READY_COUNT
+    - MOVING_AVERAGE

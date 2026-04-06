@@ -19,8 +19,6 @@ public class PriceStrategy implements OrderStrategy{
         int currentPrice = context.getCurrentPrice();;
         int targetPrice = 100000000;
 
-        System.out.println("현재 가격: " + currentPrice);
-
         return currentPrice <= targetPrice;
     }
 
