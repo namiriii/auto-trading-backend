@@ -10,6 +10,7 @@ import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.exception.NotFoundException;
+import com.namil.autotrading.price.AveragePriceProvider;
 import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
 import org.springframework.data.domain.Page;
@@ -29,16 +30,18 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final List<OrderStrategy> orderStrategies;
     private final PriceProvider priceProvider;
+    private final AveragePriceProvider averagePriceProvider;
 
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
     }
 
-    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies, PriceProvider priceProvider) {
+    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies, PriceProvider priceProvider, AveragePriceProvider averagePriceProvider) {
         this.orderRepository = orderRepository;
         this.orderStrategies = orderStrategies;
         this.priceProvider = priceProvider;
+        this.averagePriceProvider = averagePriceProvider;
     }
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -237,7 +240,7 @@ public class OrderService {
 
         int currentPrice = priceProvider.getCurrentPrice();
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
-        double averagePrice = currentPrice + ThreadLocalRandom.current().nextInt(-500000,500001);
+        double averagePrice = averagePriceProvider.getAveragePrice(currentPrice);
 
         System.out.println("현재 가격 : " + currentPrice);
         System.out.printf("평균 가격 : %.0f%n", averagePrice);

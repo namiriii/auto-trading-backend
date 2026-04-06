@@ -2,6 +2,7 @@ package com.namil.autotrading.service;
 
 import com.namil.autotrading.domain.strategy.OrderStrategy;
 import com.namil.autotrading.domain.strategy.StrategyType;
+import com.namil.autotrading.price.AveragePriceProvider;
 import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,13 @@ public class OrderServiceMockTest {
         OrderStrategy priceStrategy = mock(OrderStrategy.class);
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
         PriceProvider priceProvider = mock(PriceProvider.class);
+        AveragePriceProvider averagePriceProvider = mock(AveragePriceProvider.class);
 
         OrderService orderService = new OrderService(
                 orderRepository,
                 List.of(priceStrategy,readyCountStrategy),
-                priceProvider
+                priceProvider,
+                averagePriceProvider
         );
     }
 
@@ -36,6 +39,7 @@ public class OrderServiceMockTest {
         //가짜 전략 만들기 레디카운트전략
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
         PriceProvider priceProvider = mock(PriceProvider.class);
+        AveragePriceProvider averagePriceProvider = mock(AveragePriceProvider.class);
 
         //priceStrategy.getType()이 불리면 PRICE를 리턴하라고 설정
         when(priceStrategy.getType()).thenReturn(StrategyType.PRICE);
@@ -52,6 +56,7 @@ public class OrderServiceMockTest {
         when(readyCountStrategy.isSatisfied(org.mockito.ArgumentMatchers.any())).thenReturn(true);
 
         when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+        when(averagePriceProvider.getAveragePrice(anyInt())).thenReturn(100000000.0);
 
         //save 호출 시 전달된 Order 객체 그대로 반환
         //save 호출되면 그때 들어온 값을 그대로 돌려달라고 설정 save(order)하면 order를 그대로 반환
@@ -62,7 +67,9 @@ public class OrderServiceMockTest {
         OrderService orderService = new OrderService(
                 orderRepository,
                 List.of(priceStrategy,readyCountStrategy),
-                priceProvider
+                priceProvider,
+                averagePriceProvider
+
         );
 
         //when
@@ -84,6 +91,7 @@ public class OrderServiceMockTest {
         OrderStrategy priceStrategy = mock(OrderStrategy.class);
         OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
         PriceProvider priceProvider = mock(PriceProvider.class);
+        AveragePriceProvider averagePriceProvider = mock(AveragePriceProvider.class);
 
         when(priceStrategy.getType()).thenReturn(StrategyType.PRICE);
         when(readyCountStrategy.getType()).thenReturn(StrategyType.READY_COUNT);
@@ -98,11 +106,13 @@ public class OrderServiceMockTest {
         when(readyCountStrategy.isSatisfied(any())).thenReturn(true);
 
         when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+        when(averagePriceProvider.getAveragePrice(anyInt())).thenReturn(100000000.0);
 
         OrderService orderService = new OrderService(
                 orderRepository,
                 List.of(priceStrategy, readyCountStrategy),
-                priceProvider
+                priceProvider,
+                averagePriceProvider
         );
 
         //when
