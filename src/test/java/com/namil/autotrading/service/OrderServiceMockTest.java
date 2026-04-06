@@ -5,9 +5,11 @@ import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.price.AveragePriceProvider;
 import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -55,7 +57,7 @@ public class OrderServiceMockTest {
         //readyCountStrategy.isSatisfied()에 어떤 context가 들어오던(any()) 무조건 true반환
         when(readyCountStrategy.isSatisfied(org.mockito.ArgumentMatchers.any())).thenReturn(true);
 
-        when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+        when(priceProvider.getCurrentPrice()).thenReturn(Optional.of(100000000));
         when(averagePriceProvider.getAveragePrice(anyInt())).thenReturn(100000000.0);
 
         //save 호출 시 전달된 Order 객체 그대로 반환
@@ -105,8 +107,37 @@ public class OrderServiceMockTest {
         //READY_COUNT는 성공
         when(readyCountStrategy.isSatisfied(any())).thenReturn(true);
 
-        when(priceProvider.getCurrentPrice()).thenReturn(100000000);
+        when(priceProvider.getCurrentPrice()).thenReturn(Optional.of(100000000));
         when(averagePriceProvider.getAveragePrice(anyInt())).thenReturn(100000000.0);
+
+        OrderService orderService = new OrderService(
+                orderRepository,
+                List.of(priceStrategy, readyCountStrategy),
+                priceProvider,
+                averagePriceProvider
+        );
+
+        //when
+        orderService.createOrdersByStrategies(List.of(
+                StrategyType.PRICE,
+                StrategyType.READY_COUNT
+        ));
+
+        //then
+        verify(orderRepository, never()).save(any());
+    }
+
+    @Test
+    void 가격_조회_실패하면_주문_생성_안함() {
+        //given
+        OrderRepository orderRepository = mock(OrderRepository.class);
+        OrderStrategy priceStrategy = mock(OrderStrategy.class);
+        OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+        PriceProvider priceProvider = mock(PriceProvider.class);
+        AveragePriceProvider averagePriceProvider = mock(AveragePriceProvider.class);
+
+        //가격 조회 실패
+        when(priceProvider.getCurrentPrice()).thenReturn(Optional.empty());
 
         OrderService orderService = new OrderService(
                 orderRepository,

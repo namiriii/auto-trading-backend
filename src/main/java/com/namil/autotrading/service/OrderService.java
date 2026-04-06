@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -245,7 +246,15 @@ public class OrderService {
 
         boolean canOrder = true;
 
-        int currentPrice = priceProvider.getCurrentPrice();
+        Optional<Integer> currentPriceOptional = priceProvider.getCurrentPrice();
+
+        if(currentPriceOptional.isEmpty()) {
+            System.out.println("가격 조회 실패 -> 주문 안함");
+            return;
+        }
+
+        int currentPrice = currentPriceOptional.get();
+
         long readyCount = orderRepository.countByStatus(OrderStatus.READY);
         double averagePrice = averagePriceProvider.getAveragePrice(currentPrice);
 

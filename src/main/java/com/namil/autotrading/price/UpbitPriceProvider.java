@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Component
 public class UpbitPriceProvider implements PriceProvider{
 
@@ -20,7 +22,7 @@ public class UpbitPriceProvider implements PriceProvider{
     }
 
     @Override
-    public int getCurrentPrice() {
+    public Optional<Integer> getCurrentPrice() {
 
         String url = "https://api.upbit.com/v1/ticker?markets=" + upbitProperties.getMarket();
 
@@ -31,11 +33,11 @@ public class UpbitPriceProvider implements PriceProvider{
             if(response == null || response.length == 0) {
                 throw new IllegalStateException("업비트 응답이 비어있습니다.");
             }
-            return (int)response[0].getTrade_price();
+            return Optional.of((int)response[0].getTrade_price());
 
         } catch (Exception e) {
             log.error("업비트 API 호출 실패 - market: {}", upbitProperties.getMarket(),e);
-            throw new RuntimeException("업비트 API 호출 실패", e);
+            return Optional.empty();
         }
 
     }

@@ -2,6 +2,7 @@ package com.namil.autotrading.price;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 //랜덤 가격을 제공하는 구현체
@@ -9,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RandomPriceProvider implements  PriceProvider{
 
     @Override
-    public int getCurrentPrice() {
-        return ThreadLocalRandom.current().nextInt(90000000,110000001);
+    public Optional<Integer> getCurrentPrice() {
+        return Optional.of(ThreadLocalRandom.current().nextInt(90000000,110000001));
     }
 }
