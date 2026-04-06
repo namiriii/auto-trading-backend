@@ -34,3 +34,7 @@ app:
       max-ready-count: 3
     moving-average:
       period: 5
+
+  upbit:
+    market: KRW-BTC
+
