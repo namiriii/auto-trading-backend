@@ -32,4 +32,9 @@ public class OrderScheduler {
 
         orderService.createOrdersByStrategies(strategyProperties.getStrategies());
     }
+
+    @Scheduled(fixedRate = 10000)
+    public void autoSell() {
+        orderService.sell();
+    }
 }

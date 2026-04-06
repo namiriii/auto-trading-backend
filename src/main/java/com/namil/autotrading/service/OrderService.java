@@ -34,6 +34,10 @@ public class OrderService {
 
     private boolean isHolding = false;
 
+    public boolean isHolding() {
+        return isHolding;
+    }
+
     private Order findOrderOrThrow(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
@@ -282,5 +286,16 @@ public class OrderService {
         } else {
             System.out.println("전략 조건 불만족 -> 주문 안함");
         }
+    }
+
+    public void sell() {
+        if(!isHolding) {
+            System.out.println("보유 중이 아니라 매도 불가");
+            return;
+        }
+
+        isHolding = false;
+
+        System.out.println("매도 완료 -> holding false");
     }
 }

@@ -236,4 +236,33 @@ public class OrderServiceTest {
         long count = orderRepository.countByStatus(OrderStatus.READY);
         assertThat(count).isEqualTo(3);
     }
+
+    @Test
+    void HOLDING_FALSE_상태에서_SELL_호출시_매도불가() {
+        //given
+        //when
+        orderService.sell();
+        //then
+        assertThat(orderService.isHolding()).isFalse();
+
+    }
+
+    @Test
+    void HOLDING_TRUE_상태에서_SELL_호출시_FALSE로() {
+        //given
+        OrderRequest request = new OrderRequest();
+        request.setMarket("KRW-BTC");
+        request.setSide(OrderSide.BUY);
+        request.setAmount(new BigDecimal("10000"));
+
+        orderService.createOrder(request);
+        assertThat(orderService.isHolding()).isTrue();
+
+        //when
+        orderService.sell();
+
+        //then
+        assertThat(orderService.isHolding()).isFalse();
+    }
+
 }
