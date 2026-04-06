@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.ThreadLocalRandom;
 
 //랜덤 가격을 제공하는 구현체
-@Component
+//@Component
 public class RandomPriceProvider implements  PriceProvider{
 
     @Override
