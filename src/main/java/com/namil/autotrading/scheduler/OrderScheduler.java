@@ -45,5 +45,7 @@ public class OrderScheduler {
     @Scheduled(fixedRate = 10000)
     public void testOrder() {
         orderProvider.createTestOrder();
+        //orderProvider.testAuthOnly();
     }
+
 }

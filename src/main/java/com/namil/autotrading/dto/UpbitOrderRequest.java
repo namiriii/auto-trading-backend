@@ -1,5 +1,8 @@
 package com.namil.autotrading.dto;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class UpbitOrderRequest {
 
     private String market; //KRW-BTC
@@ -38,4 +41,6 @@ public class UpbitOrderRequest {
     public void setOrd_type(String ord_type) {
         this.ord_type = ord_type;
     }
+
+    ;
 }
