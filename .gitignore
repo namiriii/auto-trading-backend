@@ -37,3 +37,6 @@ out/
 .vscode/
 
 /data/
+
+# 🔐 sensitive config
+src/main/resources/application.yml

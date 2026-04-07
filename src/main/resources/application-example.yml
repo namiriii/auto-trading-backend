@@ -37,4 +37,5 @@ app:
 
   upbit:
     market: KRW-BTC
-
+    access-key: 여기에_액세스키
+    secret-key: 여기에_시크릿키
