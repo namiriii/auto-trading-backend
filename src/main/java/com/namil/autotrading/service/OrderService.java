@@ -5,11 +5,13 @@ import com.namil.autotrading.domain.strategy.StrategyContext;
 import com.namil.autotrading.dto.OrderPageResponse;
 import com.namil.autotrading.dto.OrderRequest;
 import com.namil.autotrading.dto.OrderResponse;
+import com.namil.autotrading.dto.UpbitOrderResponse;
 import com.namil.autotrading.entity.Order;
 import com.namil.autotrading.entity.OrderSide;
 import com.namil.autotrading.entity.OrderStatus;
 import com.namil.autotrading.domain.strategy.StrategyType;
 import com.namil.autotrading.exception.NotFoundException;
+import com.namil.autotrading.order.UpbitOrderProvider;
 import com.namil.autotrading.price.AveragePriceProvider;
 import com.namil.autotrading.price.PriceProvider;
 import com.namil.autotrading.repository.OrderRepository;
@@ -32,6 +34,7 @@ public class OrderService {
     private final List<OrderStrategy> orderStrategies;
     private final PriceProvider priceProvider;
     private final AveragePriceProvider averagePriceProvider;
+    private final UpbitOrderProvider upbitOrderProvider;
 
     private boolean isHolding = false;
 
@@ -44,11 +47,12 @@ public class OrderService {
                 .orElseThrow(()-> new NotFoundException("주문 없음"));
     }
 
-    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies, PriceProvider priceProvider, AveragePriceProvider averagePriceProvider) {
+    public OrderService(OrderRepository orderRepository, List<OrderStrategy> orderStrategies, PriceProvider priceProvider, AveragePriceProvider averagePriceProvider, UpbitOrderProvider upbitOrderProvider) {
         this.orderRepository = orderRepository;
         this.orderStrategies = orderStrategies;
         this.priceProvider = priceProvider;
         this.averagePriceProvider = averagePriceProvider;
+        this.upbitOrderProvider = upbitOrderProvider;
     }
 
     public OrderResponse createOrder(OrderRequest request) {
@@ -306,5 +310,36 @@ public class OrderService {
         isHolding = false;
 
         System.out.println("매도 완료 -> holding false");
+    }
+
+    public void createUpbitTestOrder() {
+        UpbitOrderResponse body = upbitOrderProvider.createTestOrder();
+
+        if(body == null) {
+            return;
+        }
+
+        OrderSide side;
+        if("bid".equals(body.getSide())) {
+            side = OrderSide.BUY;
+        } else {
+            side = OrderSide.SELL;
+        }
+
+        OrderStatus status;
+        if("wait".equals(body.getState())) {
+            status = OrderStatus.ORDERED;
+        } else {
+            status = OrderStatus.CANCELED;
+        }
+
+        Order order = new Order(
+                body.getMarket(),
+                side,
+                new BigDecimal(body.getPrice()),
+                status
+        );
+
+        orderRepository.save(order);
     }
 }
