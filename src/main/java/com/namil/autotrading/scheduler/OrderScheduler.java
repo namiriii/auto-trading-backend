@@ -31,13 +31,13 @@ public class OrderScheduler {
     }
 
     //5초마다 체크
-    @Scheduled(fixedRate = 5000)
+    //@Scheduled(fixedRate = 5000)
     public void createOrderAutomatically() {
 
         orderService.createOrdersByStrategies(strategyProperties.getStrategies());
     }
 
-    @Scheduled(fixedRate = 10000)
+    //@Scheduled(fixedRate = 10000)
     public void autoSell() {
         orderService.sell();
     }

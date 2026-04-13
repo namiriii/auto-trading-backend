@@ -326,19 +326,20 @@ public class OrderService {
             side = OrderSide.SELL;
         }
 
-        OrderStatus status;
-        if("wait".equals(body.getState())) {
-            status = OrderStatus.ORDERED;
-        } else {
-            status = OrderStatus.CANCELED;
-        }
+
 
         Order order = new Order(
                 body.getMarket(),
                 side,
                 new BigDecimal(body.getPrice()),
-                status
+                OrderStatus.READY
         );
+
+        if("done".equals(body.getState())) {
+            order.executeOrder();
+        } else if ("cancel".equals(body.getState())) {
+            order.cancelOrder();
+        }
 
         orderRepository.save(order);
     }

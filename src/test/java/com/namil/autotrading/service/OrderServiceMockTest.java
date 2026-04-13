@@ -271,8 +271,40 @@ public class OrderServiceMockTest {
         assertThat(savedOrder.getMarket()).isEqualTo("KRW-BTC");
         assertThat(savedOrder.getSide()).isEqualTo(OrderSide.BUY);
         assertThat(savedOrder.getAmount()).isEqualByComparingTo("5000");
-        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.ORDERED);
+        assertThat(savedOrder.getStatus()).isEqualTo(OrderStatus.READY);
+    }
 
+    @Test
+    void 업비트_done_응답이면_ORDERED로_저장되고_orderedAt이_설정된다() {
+        //given
+        OrderRepository orderRepository = mock(OrderRepository.class);
+        OrderStrategy priceStrategy = mock(OrderStrategy.class);
+        OrderStrategy readyCountStrategy = mock(OrderStrategy.class);
+        PriceProvider priceProvider = mock(PriceProvider.class);
+        AveragePriceProvider averagePriceProvider = mock(AveragePriceProvider.class);
+        UpbitOrderProvider upbitOrderProvider = mock(UpbitOrderProvider.class);
 
+        UpbitOrderResponse response = new UpbitOrderResponse();
+        response.setMarket("KRW-BTC");
+        response.setSide("bid");
+        response.setPrice("5000");
+        response.setState("done");
+
+        when(upbitOrderProvider.createTestOrder()).thenReturn(response);
+        when(orderRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        OrderService orderService = new OrderService(
+                orderRepository,
+                List.of(priceStrategy, readyCountStrategy),
+                priceProvider,
+                averagePriceProvider,
+                upbitOrderProvider
+        );
+        //when
+        orderService.createUpbitTestOrder();
+
+        //then
+        ArgumentCaptor<Order> captor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository).save(captor.capture());
     }
 }
